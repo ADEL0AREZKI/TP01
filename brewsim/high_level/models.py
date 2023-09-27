@@ -4,67 +4,82 @@ from django.db import models
 
 
 class Departement(models.Model):
-	numero = models.IntegerField()
-	prixm2 = models.IntegerField()
+    numero = models.IntegerField()
+    prixm2 = models.IntegerField()
+
 
 class Ingredient(models.Model):
-	nom = models.CharField(max_length=100)
+    nom = models.CharField(max_length=100)
+
 
 class Prix(models.Model):
-	ingredient = models.ForeignKey(Ingredient, # ou "self",
-									on_delete=models.PROTECT,
-									# blank=True, null=True,
-									# related_name="+",
-									)
-	departement = models.ForeignKey(Departement, # ou "self",
-									on_delete=models.PROTECT,
-									# blank=True, null=True,
-									# related_name="+",
-									)
-	prix = models.IntegerField()
+    ingredient = models.ForeignKey(
+        Ingredient,  # ou "self",
+        on_delete=models.PROTECT,
+        # blank=True, null=True,
+        # related_name="+",
+    )
+    departement = models.ForeignKey(
+        Departement,  # ou "self",
+        on_delete=models.PROTECT,
+        # blank=True, null=True,
+        # related_name="+",
+    )
+    prix = models.IntegerField()
+
 
 class Machine(models.Model):
-	nom = models.CharField(max_length=100)
-	prix = models.IntegerField()
+    nom = models.CharField(max_length=100)
+    prix = models.IntegerField()
+
 
 class QuantiteIngredient(models.Model):
-	ingredient = models.ForeignKey(Ingredient, # ou "self",
-									on_delete=models.PROTECT,
-									# blank=True, null=True,
-									# related_name="+",
-									)
-	quantite = models.IntegerField()
+    ingredient = models.ForeignKey(
+        Ingredient,  # ou "self",
+        on_delete=models.PROTECT,
+        # blank=True, null=True,
+        # related_name="+",
+    )
+    quantite = models.IntegerField()
+
 
 class Action(models.Model):
-	machine = models.ForeignKey(Machine, # ou "self",
-									on_delete=models.PROTECT,
-									# blank=True, null=True,
-									# related_name="+",
-									)
-	commande = models.CharField(max_length=100)
-	duree = models.IntegerField()
-	ingredients = models.ManyToManyField(QuantiteIngredient)
-	action = models.ForeignKey("self", # ou "self",
-									on_delete=models.PROTECT,
-									blank=True, null=True,
-									related_name="+"
-									)
+    machine = models.ForeignKey(
+        Machine,  # ou "self",
+        on_delete=models.PROTECT,
+        # blank=True, null=True,
+        # related_name="+",
+    )
+    commande = models.CharField(max_length=100)
+    duree = models.IntegerField()
+    ingredients = models.ManyToManyField(QuantiteIngredient)
+    action = models.ForeignKey(
+        "self",  # ou "self",
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        related_name="+",
+    )
+
 
 class Recette(models.Model):
-	nom = models.CharField(max_length=100)
-	action = models.ForeignKey(Action, # ou "self",
-									on_delete=models.PROTECT,
-									# blank=True, null=True,
-									# related_name="+",
-									)
+    nom = models.CharField(max_length=100)
+    action = models.ForeignKey(
+        Action,  # ou "self",
+        on_delete=models.PROTECT,
+        # blank=True, null=True,
+        # related_name="+",
+    )
+
 
 class Usine(models.Model):
-	departement = models.ForeignKey(Departement, # ou "self",
-									on_delete=models.PROTECT,
-									# blank=True, null=True,
-									# related_name="+",
-									)
-	taille = models.IntegerField()
-	machines = models.ManyToManyField(Machine)
-	recettes = models.ManyToManyField(Recette)
-	stocks = models.ManyToManyField(QuantiteIngredient)
+    departement = models.ForeignKey(
+        Departement,  # ou "self",
+        on_delete=models.PROTECT,
+        # blank=True, null=True,
+        # related_name="+",
+    )
+    taille = models.IntegerField()
+    machines = models.ManyToManyField(Machine)
+    recettes = models.ManyToManyField(Recette)
+    stocks = models.ManyToManyField(QuantiteIngredient)
