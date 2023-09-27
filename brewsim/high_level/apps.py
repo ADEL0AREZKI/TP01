@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class HightLevelConfig(AppConfig):
+class HighLevelConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "hight_level"
+    name = "high_level"
