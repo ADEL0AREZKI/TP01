@@ -27,12 +27,3 @@ class MachineModelTests(TestCase):
         usine.stocks.add(stock_orge)
 
         self.assertEqual(Usine.objects.first().costs(), 105000)
-
-
-"""
-class MachineModelTests(TestCase):
-	def test_usine_creation(self):
-		self.assertEqual(Machine.objects.count(), 0)
-		Machine.objects.create(nom="four",prix=1_000)
-		self.assertEqual(Machine.objects.count(), 1)
-"""

@@ -1,13 +1,6 @@
 from django.db import models
 
 
-class Ingredient(models.Model):
-    nom = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.nom
-
-
 class Departement(models.Model):
     numero = models.IntegerField()
     prixm2 = models.IntegerField()
@@ -15,10 +8,29 @@ class Departement(models.Model):
     def __str__(self):
         return f"Département {self.numero}"
 
+    def json(self):
+        return {"numero": self.numero, "prixm2": self.prixm2}
+
+    def json_extended(self):
+        return self.json()
+
+
+class Ingredient(models.Model):
+    nom = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nom
+
+    def json(self):
+        return {"nom": self.nom}
+
+    def json_extended(self):
+        return self.json()
+
 
 class Prix(models.Model):
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.PROTECT)
     departement = models.ForeignKey(Departement, on_delete=models.PROTECT)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.PROTECT)
     prix = models.IntegerField()
 
     def __str__(self):
@@ -27,12 +39,19 @@ class Prix(models.Model):
             f" {self.departement.numero} à {self.prix}€"
         )
 
+    def json(self):
+        return {
+            "ingredient": self.ingredient.id,
+            "departement": self.departement.id,
+            "prix": self.prix,
+        }
+
 
 class QuantiteIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.PROTECT)
     quantite = models.IntegerField()
 
-    def __str__(self):
+    def __str__(self):  # recettes": [r.id for r in self.recettes.all()],
         return f"{self.ingredient.nom} quantité {self.quantite}"
 
     def couts(self, departement):
@@ -41,6 +60,12 @@ class QuantiteIngredient(models.Model):
             * self.quantite
         )
 
+    def json(self):
+        return {"ingredient": self.ingredient.id, "quantite": self.quantite}
+
+    def json_extended(self):
+        return {"ingredient": self.ingredient.json_extended, "quantite": self.quantite}
+
 
 class Machine(models.Model):
     nom = models.CharField(max_length=50)
@@ -48,6 +73,9 @@ class Machine(models.Model):
 
     def __str__(self):
         return f"{self.nom}"
+
+    def json(self):
+        return {"nom": self.nom, "prix": self.prix}
 
 
 class Action(models.Model):
@@ -66,13 +94,26 @@ class Action(models.Model):
     def __str__(self):
         return f"{self.commande}"
 
+    def json(self):
+        return {
+            "machine": self.machine.id,
+            "ingredient": self.ingredient.id,
+            "commande": self.commande,
+            "duree": self.duree,
+            "action": self.action.id,
+        }
+
 
 class Recette(models.Model):
     nom = models.CharField(max_length=50)
     action = models.ForeignKey(Action, on_delete=models.PROTECT)
 
+    # "recettes": [r.id for r in self.recettes.all()],
     def __str__(self):
         return f"{self.nom}"
+
+    def json(self):
+        return {"nom": self.nom, "action": self.action.id}
 
 
 class Usine(models.Model):
@@ -103,3 +144,12 @@ class Usine(models.Model):
             + self.somme_machines()
             + self.somme_stocks()
         )
+
+    def json(self):
+        return {
+            "taille": self.taille,
+            "departement": self.departement.id,
+            "recettes": [r.id for r in self.recettes.all()],
+            "machines": [m.id for m in self.machines.all()],
+            "stocks": [s.id for s in self.stocks.all()],
+        }
